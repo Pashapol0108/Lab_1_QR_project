@@ -160,3 +160,19 @@ python app.py
 
 ---
 
+## Docker Deployment
+
+### Запуск с помощью Docker Compose (рекомендуется)
+
+1. Убедитесь, что у вас установлены Docker и Docker Compose
+
+2. Клонируйте репозиторий и перейдите в папку проекта:
+```bash
+git clone <URL-репозитория>
+cd Lab_1_QR_project
+```
+3. Запустите приложение
+```bash
+docker-compose up --build
+```
+Приложение будет доступно по адресу: [http://127.0.0.1:8000](http://127.0.0.1:8000)
