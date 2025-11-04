@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.0
+    hooks:
+      - id: gitleaks
+        name: Gitleaks
+        description: Detect hardcoded secrets and passwords
+        entry: gitleaks
+        args: ['protect', '--staged', '--verbose']
+        language: system
+        stages: ['commit']
