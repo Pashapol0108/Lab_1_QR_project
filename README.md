@@ -168,7 +168,7 @@ python app.py
 
 2. Клонируйте репозиторий и перейдите в папку проекта:
 ```bash
-git clone <URL-репозитория>
+git clone <https://github.com/Pashapol0108/Lab_1_QR_project>
 cd Lab_1_QR_project
 ```
 3. Запустите приложение
