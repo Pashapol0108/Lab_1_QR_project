@@ -160,3 +160,24 @@ python app.py
 
 ---
 
+## Lab 2 - Security Practices
+
+This branch demonstrates security practices including:
+
+### Security Tools
+- **Gitleaks**: Secret detection in code and history
+- **Pre-commit hooks**: Automatic secret scanning before commits
+- **SBOM**: Software Bill of Materials generation
+- **Dependabot**: Automated dependency updates
+
+### Files Added
+- `.gitleaks.toml` - Secret detection configuration
+- `.pre-commit-config.yaml` - Pre-commit hooks
+- `.gitleaksignore` - False positives ignore list
+- `sbom.json` - Software Bill of Materials
+- `.github/dependabot.yml` - Automated dependency updates
+
+### Usage
+- Pre-commit hook automatically scans for secrets on each commit
+- Run `gitleaks detect --source .` to manually scan for secrets
+- SBOM generated with `syft packages requirements.txt -o cyclonedx-json > sbom.json`
