@@ -181,3 +181,9 @@ jobs:
           TRIVY_CRIT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity == "CRITICAL")] | length' trivy-report.json || echo 0)
           echo "- Count: $TRIVY_COUNT" >> report.md
           echo "- Criticality: Varies ($TRIVY_CRIT critical)" >> report.md
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: devsecops-report
+          path: report.md
