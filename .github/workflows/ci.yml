@@ -56,8 +56,26 @@ jobs:
 
       - name: Install Trivy
         run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.56.2  # Установка Trivy
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.56.2
 
       - name: Scan image with Trivy
-        run: trivy image --exit-code 0 --no-progress --format json --output trivy-report.json app:latest  # --exit-code 0 чтобы не фейлить джоб
+        run: trivy image --exit-code 0 --no-progress --format json --output trivy-report.json app:latest
 
+      - name: Run container for healthcheck
+        run: docker run -d -p 8000:8000 app:latest
+
+      - name: Wait for app to start
+        run: sleep 10
+
+      - name: Check /healthcheck
+        run: |
+          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/healthcheck)
+          if [ "$RESPONSE_CODE" != "200" ]; then
+            echo "Healthcheck failed: HTTP $RESPONSE_CODE"
+            exit 1
+          fi
+          echo "Healthcheck OK: HTTP 200"
+
+      - name: Stop container
+        if: always()
+        run: docker stop $(docker ps -q --filter ancestor=app:latest) || true
