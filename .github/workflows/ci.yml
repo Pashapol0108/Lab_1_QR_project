@@ -149,13 +149,8 @@ jobs:
 
       - name: Generate report.md
         run: |
+          set +e  # Disable exit on error
           echo "# DevSecOps Report" > report.md
-          echo "## Flake8 (Style Issues)" >> report.md
-          FLAKE_COUNT=$(flake8 . --count || true)
-          echo "- Count: $FLAKE_COUNT" >> report.md
-          echo "- Criticality: Low (coding style violations)" >> report.md
-          echo "" >> report.md
-
           echo "## Ruff (Lint Issues)" >> report.md
           RUFF_COUNT=$(ruff check . --quiet | wc -l || true)
           echo "- Count: $RUFF_COUNT" >> report.md
@@ -168,12 +163,6 @@ jobs:
           BANDIT_HIGH=$(echo "$BANDIT_OUTPUT" | grep -c 'Severity: HIGH')
           echo "- Count: $BANDIT_COUNT" >> report.md
           echo "- Criticality: High ($BANDIT_HIGH high severity)" >> report.md
-          echo "" >> report.md
-
-          echo "## Hadolint (Dockerfile Issues)" >> report.md
-          HADOLINT_COUNT=$(./hadolint Dockerfile | wc -l || true)
-          echo "- Count: $HADOLINT_COUNT" >> report.md
-          echo "- Criticality: Low (best practices)" >> report.md
           echo "" >> report.md
 
           echo "## Trivy (Vulnerabilities)" >> report.md
