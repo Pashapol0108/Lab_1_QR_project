@@ -146,7 +146,7 @@ jobs:
           echo "" >> report.md
 
           echo "## Ruff (Lint Issues)" >> report.md
-          RUFF_COUNT=$(ruff check . --output-format=text | grep -c '^' || true)
+          RUFF_COUNT=$(ruff check . --quiet | wc -l || true)
           echo "- Count: $RUFF_COUNT" >> report.md
           echo "- Criticality: Low-Medium (style and errors)" >> report.md
           echo "" >> report.md
