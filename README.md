@@ -181,3 +181,22 @@ This branch demonstrates security practices including:
 - Pre-commit hook automatically scans for secrets on each commit
 - Run `gitleaks detect --source .` to manually scan for secrets
 - SBOM generated with `syft packages requirements.txt -o cyclonedx-json > sbom.json`
+
+---
+
+## Docker Deployment
+
+### Запуск с помощью Docker Compose (рекомендуется)
+
+1. Убедитесь, что у вас установлены Docker и Docker Compose
+
+2. Клонируйте репозиторий и перейдите в папку проекта:
+```bash
+git clone <https://github.com/Pashapol0108/Lab_1_QR_project>
+cd Lab_1_QR_project
+```
+3. Запустите приложение
+```bash
+docker-compose up --build
+```
+Приложение будет доступно по адресу: [http://127.0.0.1:8000](http://127.0.0.1:8000)
