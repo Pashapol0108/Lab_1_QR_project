@@ -61,6 +61,12 @@ jobs:
       - name: Scan image with Trivy
         run: trivy image --exit-code 0 --no-progress --format json --output trivy-report.json app:latest
 
+      - name: Upload Trivy report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.json
+
       - name: Run container for healthcheck
         run: docker run -d -p 8000:8000 app:latest
 
@@ -136,6 +142,11 @@ jobs:
           wget https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 -O hadolint
           chmod +x hadolint
 
+      - name: Download Trivy report
+        uses: actions/download-artifact@v4
+        with:
+          name: trivy-report
+
       - name: Generate report.md
         run: |
           echo "# DevSecOps Report" > report.md
@@ -152,7 +163,7 @@ jobs:
           echo "" >> report.md
 
           echo "## Bandit (Security Issues)" >> report.md
-          BANDIT_OUTPUT=$(bandit -r . -f txt || true)
+          BANDIT_OUTPUT=$(bandit -r . -f txt 2>&1 || true)
           BANDIT_COUNT=$(echo "$BANDIT_OUTPUT" | grep -c 'Issue:')
           BANDIT_HIGH=$(echo "$BANDIT_OUTPUT" | grep -c 'Severity: HIGH')
           echo "- Count: $BANDIT_COUNT" >> report.md
