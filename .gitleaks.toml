@@ -1,0 +1,15 @@
+title = "Lab gitleaks config"
+
+[[rules]]
+id = "demo-secret"
+description = "Demo secret for lab work with UUID pattern"
+regex = '''demo_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'''
+keywords = ["DEMO_SECRET"]
+
+[[rules]]
+id = "stripe-api-key"
+description = "Stripe API Key pattern"
+regex = '''sk_(test|live)_[a-zA-Z0-9]{24}'''
+keywords = ["API_KEY", "STRIPE"]
+
+

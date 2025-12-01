@@ -160,19 +160,24 @@ python app.py
 
 ---
 
-## Docker Deployment
+## Lab 2 - Security Practices
 
-### Запуск с помощью Docker Compose (рекомендуется)
+This branch demonstrates security practices including:
 
-1. Убедитесь, что у вас установлены Docker и Docker Compose
+### Security Tools
+- **Gitleaks**: Secret detection in code and history
+- **Pre-commit hooks**: Automatic secret scanning before commits
+- **SBOM**: Software Bill of Materials generation
+- **Dependabot**: Automated dependency updates
 
-2. Клонируйте репозиторий и перейдите в папку проекта:
-```bash
-git clone <https://github.com/Pashapol0108/Lab_1_QR_project>
-cd Lab_1_QR_project
-```
-3. Запустите приложение
-```bash
-docker-compose up --build
-```
-Приложение будет доступно по адресу: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+### Files Added
+- `.gitleaks.toml` - Secret detection configuration
+- `.pre-commit-config.yaml` - Pre-commit hooks
+- `.gitleaksignore` - False positives ignore list
+- `sbom.json` - Software Bill of Materials
+- `.github/dependabot.yml` - Automated dependency updates
+
+### Usage
+- Pre-commit hook automatically scans for secrets on each commit
+- Run `gitleaks detect --source .` to manually scan for secrets
+- SBOM generated with `syft packages requirements.txt -o cyclonedx-json > sbom.json`
