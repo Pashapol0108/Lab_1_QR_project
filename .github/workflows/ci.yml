@@ -54,3 +54,10 @@ jobs:
       - name: Build Docker image
         run: docker build -t app:latest .
 
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.56.2  # Установка Trivy
+
+      - name: Scan image with Trivy
+        run: trivy image --exit-code 0 --no-progress --format json --output trivy-report.json app:latest  # --exit-code 0 чтобы не фейлить джоб
+
