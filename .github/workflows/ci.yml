@@ -113,3 +113,60 @@ jobs:
 
       - name: Run bandit security scan
         run: bandit -r . || true
+
+  generate-report:
+    runs-on: ubuntu-latest
+    needs: [ lint-and-test, ruff-lint, bandit-scan, docker-build ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies for report
+        run: |
+          pip install flake8 ruff bandit
+          sudo apt-get update && sudo apt-get install -y jq wget
+
+      - name: Install hadolint for report
+        run: |
+          wget https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 -O hadolint
+          chmod +x hadolint
+
+      - name: Generate report.md
+        run: |
+          echo "# DevSecOps Report" > report.md
+          echo "## Flake8 (Style Issues)" >> report.md
+          FLAKE_COUNT=$(flake8 . --count || true)
+          echo "- Count: $FLAKE_COUNT" >> report.md
+          echo "- Criticality: Low (coding style violations)" >> report.md
+          echo "" >> report.md
+
+          echo "## Ruff (Lint Issues)" >> report.md
+          RUFF_COUNT=$(ruff check . --output-format=text | grep -c '^' || true)
+          echo "- Count: $RUFF_COUNT" >> report.md
+          echo "- Criticality: Low-Medium (style and errors)" >> report.md
+          echo "" >> report.md
+
+          echo "## Bandit (Security Issues)" >> report.md
+          BANDIT_OUTPUT=$(bandit -r . -f txt || true)
+          BANDIT_COUNT=$(echo "$BANDIT_OUTPUT" | grep -c 'Issue:')
+          BANDIT_HIGH=$(echo "$BANDIT_OUTPUT" | grep -c 'Severity: HIGH')
+          echo "- Count: $BANDIT_COUNT" >> report.md
+          echo "- Criticality: High ($BANDIT_HIGH high severity)" >> report.md
+          echo "" >> report.md
+
+          echo "## Hadolint (Dockerfile Issues)" >> report.md
+          HADOLINT_COUNT=$(./hadolint Dockerfile | wc -l || true)
+          echo "- Count: $HADOLINT_COUNT" >> report.md
+          echo "- Criticality: Low (best practices)" >> report.md
+          echo "" >> report.md
+
+          echo "## Trivy (Vulnerabilities)" >> report.md
+          TRIVY_COUNT=$(jq '[.Results[].Vulnerabilities[]] | length' trivy-report.json || echo 0)
+          TRIVY_CRIT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity == "CRITICAL")] | length' trivy-report.json || echo 0)
+          echo "- Count: $TRIVY_COUNT" >> report.md
+          echo "- Criticality: Varies ($TRIVY_CRIT critical)" >> report.md
